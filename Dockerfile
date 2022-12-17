@@ -9,4 +9,4 @@ COPY resources resources
 COPY automl automl
 COPY scripts scripts
 RUN chmod 777 scripts/*
-CMD ["./scripts/run_experiments.sh"]
+ENTRYPOINT ["./scripts/run_experiments.sh"]
