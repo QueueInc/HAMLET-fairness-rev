@@ -1,7 +1,12 @@
 FROM python:3.9-bullseye
 RUN apt update
 RUN apt install docker.io default-jre git -y
-RUN cd home && git clone https://github.com/QueueInc/HAMLET-FGCS2022.git
+RUN pip install --upgrade pip && pip install openml tqdm pandas matplotlib auto-sklearn
+RUN cd home && mkdir HAMLET-FGCS2022
 WORKDIR /home/HAMLET-FGCS2022
+RUN mkdir results
+COPY resources resources
+COPY automl automl
+COPY scripts scripts
 RUN chmod 777 scripts/*
 CMD ["./scripts/run_experiments.sh"]
