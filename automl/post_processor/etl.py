@@ -45,12 +45,12 @@ def extract(budget, path, input_folder, output_folder):
     extract_results(budget, path, input_folder, output_folder, "pkb_ika")
 
     extract_comparison_results(
-        os.path.join(path, f"auto_sklearn_{budget}"), "auto_sklearn"
+        os.path.join(path, "auto_sklearn"), "auto_sklearn"
     )
     # extract_comparison_results(
     #     os.path.join(path, "auto_sklearn_pro_500"), "auto_sklearn_pro"
     # )
-    extract_comparison_results(os.path.join(path, f"h2o_pro_{budget}"), "h2o")
+    extract_comparison_results(os.path.join(path, "h2o"), "h2o")
 
 
 def summarize(budget, path, output_folder):
@@ -60,13 +60,13 @@ def summarize(budget, path, output_folder):
 
     df = pd.read_csv(os.path.join(path, output_folder, "summary.csv")).set_index("id")
     df_auto_sklearn = pd.read_csv(
-        os.path.join(path, f"auto_sklearn_{budget}", "summary.csv")
+        os.path.join(path, "auto_sklearn", "summary.csv")
     ).set_index("id")
     # df_auto_sklearn_pro_500 = pd.read_csv(
     #     os.path.join(path, "auto_sklearn_pro_500", "summary.csv")
     # ).set_index("id")
     df_h2o = pd.read_csv(
-        os.path.join(path, f"h2o_pro_{budget}", "summary.csv")
+        os.path.join(path, "h2o", "summary.csv")
     ).set_index("id")
 
     others = [

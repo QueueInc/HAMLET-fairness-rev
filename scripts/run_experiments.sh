@@ -1,11 +1,17 @@
 #!/bin/bash
 echo Running EXPERIMENTS
-./scripts/run_hamlet.sh results/hamlet balanced_accuracy max 500 3600 1.0.0 1 $(pwd)/resources/kb.txt
-./scripts/run_hamlet.sh results/hamlet balanced_accuracy max 500 3600 1.0.0 1 $(pwd)/resources/pkb.txt
-./scripts/run_hamlet.sh results/hamlet balanced_accuracy max 125 900 1.0.0 4 $(pwd)/resources/kb.txt
-./scripts/run_hamlet.sh results/hamlet balanced_accuracy max 125 900 1.0.0 4 $(pwd)/resources/pkb.txt
-./scripts/run_comparison.sh h2o_500 3600 results/h2o
-./scripts/run_comparison.sh auto_sklearn_500 3600 results/auto_sklearn
+wget https://github.com/QueueInc/HAMLET/releases/download/$6/hamlet-$6-all.jar
+python3 -m venv venv
 source venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install openml
+python -m pip install tqdm
+python -m pip install pandas
+python automl/run_hamlet.py --workspace results/hamlet --metric balanced_accuracy --mode max --batch_size 500 --time_budget 3600 --version 1.0.0 --iterations 1 --kb $(pwd)/resources/kb.txt
+python automl/run_hamlet.py --workspace results/hamlet --metric balanced_accuracy --mode max --batch_size 500 --time_budget 3600 --version 1.0.0 --iterations 1 --kb $(pwd)/resources/pkb.txt
+python automl/run_hamlet.py --workspace results/hamlet --metric balanced_accuracy --mode max --batch_size 125 --time_budget 900 --version 1.0.0 --iterations 4 --kb $(pwd)/resources/kb.txt
+python automl/run_hamlet.py --workspace results/hamlet --metric balanced_accuracy --mode max --batch_size 125 --time_budget 900 --version 1.0.0 --iterations 4 --kb $(pwd)/resources/pkb.txt
+python automl/run_comparison.py --tool h2o --budget 3600 --output_folder results/h2o
+python automl/run_comparison.py --tool auto_sklearn --budget 3600 --output_folder results/auto_sklearn
 python automl/post_processor/etl.py --input-folder hamlet --output-folder hamlet --budget 500
 deactivate
