@@ -1,7 +1,7 @@
 FROM python:3.9-bullseye
 RUN apt update
 RUN apt install docker.io default-jre git -y
-RUN pip install --upgrade pip && pip install openml tqdm pandas matplotlib auto-sklearn
+RUN pip install --upgrade pip && pip install openml tqdm pandas matplotlib auto-sklearn paretoset
 RUN cd home && mkdir HAMLET-FGCS2022
 WORKDIR /home/HAMLET-FGCS2022
 RUN mkdir results
