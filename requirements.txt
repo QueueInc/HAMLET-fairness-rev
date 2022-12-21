@@ -1,0 +1,14 @@
+auto-sklearn
+numpy
+pandas
+flaml[blendsearch]
+openml
+matplotlib
+seq2pat
+mlxtend
+imbalanced-learn
+xgboost
+lightgbm
+catboost
+tqdm
+paretoset

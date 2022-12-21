@@ -1,7 +1,16 @@
 FROM python:3.9-bullseye
 RUN apt update
 RUN apt install docker.io default-jre git -y
-RUN pip install --upgrade pip && pip install openml tqdm pandas matplotlib auto-sklearn paretoset
+COPY requirements.txt requirements.txt
+RUN pip install --upgrade pip && \
+    pip install black && \
+    pip install --no-cache-dir --upgrade -r /requirements.txt && \
+    pip install requests && \
+    pip install tabulate && \
+    pip install future && \
+    pip uninstall h2o && \
+    pip install -f http://h2o-release.s3.amazonaws.com/h2o/latest_stable_Py.html h2o && \
+    rm requirements.txt
 RUN cd home && mkdir HAMLET-FGCS2022
 WORKDIR /home/HAMLET-FGCS2022
 RUN mkdir results
