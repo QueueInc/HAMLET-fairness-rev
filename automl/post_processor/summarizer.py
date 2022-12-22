@@ -238,7 +238,8 @@ def get_position(target, evaluated_rewards):
     return next((i for i, x in enumerate(filtered) if x >= target), -1)
 
 
-def summarize_results(baseline, other, limit, output_path):
+def summarize_results(baseline, other, limit, path, output_folder):
+    output_path = os.path.join(path, output_folder)
     data = {}
     for approach in [baseline] + other:
         with open(os.path.join(output_path, approach, "summary.json")) as f:
@@ -293,7 +294,7 @@ def summarize_results(baseline, other, limit, output_path):
     df = pd.DataFrame.from_dict(data, orient="index")
 
     mf = pd.read_csv(
-        os.path.join("/", "home", "resources", "dataset-meta-features.csv")
+        os.path.join(path, "resources", "dataset-meta-features.csv")
     )
     mf["did"] = mf["did"].astype("str")
     mf = mf.set_index("did")

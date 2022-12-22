@@ -63,7 +63,7 @@ def extract(budget, path, input_folder, output_folder):
 
 def summarize(budget, path, output_folder):
     summarize_results(
-        "baseline", ["pkb", "ika", "pkb_ika"], budget, os.path.join(path, output_folder)
+        "baseline", ["pkb", "ika", "pkb_ika"], budget, path, output_folder
     )
 
     df = pd.read_csv(os.path.join(path, output_folder, "summary.csv")).set_index("id")
