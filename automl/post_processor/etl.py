@@ -19,12 +19,20 @@ def parse_args():
         help="iteration budget",
     )
     parser.add_argument(
+        "-path",
+        "--path",
+        nargs="?",
+        type=str,
+        required=True,
+        help="absolute path of the results",
+    )
+    parser.add_argument(
         "-input-folder",
         "--input-folder",
         nargs="?",
         type=str,
         required=True,
-        help="mode of the experiments",
+        help="input folder in which the hamlet results are",
     )
     parser.add_argument(
         "-output-folder",
@@ -32,7 +40,7 @@ def parse_args():
         nargs="?",
         type=str,
         required=True,
-        help="mode of the experiments",
+        help="output folder in which we want to export the plots",
     )
     args = parser.parse_args()
     return args
@@ -82,13 +90,12 @@ def summarize(budget, path, output_folder):
 
 
 def main(args):
-    path = os.path.join("/", "home", "results")
 
-    if not os.path.exists(os.path.join(path, args.output_folder)):
-        os.makedirs(os.path.join(path, args.output_folder))
+    if not os.path.exists(os.path.join(args.path, args.output_folder)):
+        os.makedirs(os.path.join(args.path, args.output_folder))
 
-    extract(args.budget, path, args.input_folder, args.output_folder)
-    summary = summarize(args.budget, path, args.output_folder)
+    extract(args.budget, args.path, args.input_folder, args.output_folder)
+    summary = summarize(args.budget, args.path, args.output_folder)
 
     plot_matplotlib(
         summary,
@@ -102,10 +109,10 @@ def main(args):
             "auto_sklearn",
             "h2o",
         ],
-        os.path.join(path, args.output_folder),
+        os.path.join(args.path, args.output_folder),
     )
-    time_plot(summary, os.path.join(path, args.output_folder), args.budget, "time")
-    time_plot(summary, os.path.join(path, args.output_folder), args.budget, "iteration")
+    time_plot(summary, os.path.join(args.path, args.output_folder), args.budget, "time")
+    time_plot(summary, os.path.join(args.path, args.output_folder), args.budget, "iteration")
 
 
 if __name__ == "__main__":
