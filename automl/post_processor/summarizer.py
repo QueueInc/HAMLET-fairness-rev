@@ -210,6 +210,8 @@ def extract_comparison_results(path, label):
                 f"best_time_{label}": 0,
             }
 
+    if not os.path.exists(path):
+        os.makedirs(path)
     with open(os.path.join(path, "summary.json"), "w") as outfile:
         json.dump(results, outfile, indent=4)
     pd.DataFrame(results).T.reset_index().rename(columns={"index": "id"}).to_csv(
