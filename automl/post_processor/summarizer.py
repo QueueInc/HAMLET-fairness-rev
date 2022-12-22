@@ -294,7 +294,7 @@ def summarize_results(baseline, other, limit, path, output_folder):
     df = pd.DataFrame.from_dict(data, orient="index")
 
     mf = pd.read_csv(
-        os.path.join(path, "resources", "dataset-meta-features.csv")
+        os.path.join("/home/HAMLET-FGCS2022", "resources", "dataset-meta-features.csv")
     )
     mf["did"] = mf["did"].astype("str")
     mf = mf.set_index("did")
