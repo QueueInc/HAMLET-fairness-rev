@@ -11,8 +11,8 @@ RUN pip install --upgrade pip && \
     pip uninstall h2o && \
     pip install -f http://h2o-release.s3.amazonaws.com/h2o/latest_stable_Py.html h2o && \
     rm requirements.txt
-RUN cd home && mkdir HAMLET-FGCS2022
-WORKDIR /home/HAMLET-FGCS2022
+RUN cd home && mkdir HAMLET-fairness
+WORKDIR /home/HAMLET-fairness
 RUN mkdir results
 COPY resources resources
 COPY automl automl

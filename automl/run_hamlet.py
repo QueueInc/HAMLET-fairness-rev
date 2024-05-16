@@ -69,6 +69,7 @@ def get_commands(data, args):
                         {dataset_path} \
                         {dataset} \
                         {args.metric} \
+                        {args.fair_metric} \
                         {args.mode} \
                         {args.batch_size} \
                         {args.time_budget} \
@@ -117,6 +118,14 @@ def parse_args():
         type=str,
         required=False,
         help="metric to optimize",
+    )
+    parser.add_argument(
+        "-fair_metric",
+        "--fair_metric",
+        nargs="?",
+        type=str,
+        required=False,
+        help="fair metric to optimize",
     )
     parser.add_argument(
         "-mode",
@@ -187,7 +196,7 @@ def get_filtered_datasets(suite):
 
 args = parse_args()
 # data = openml.study.get_suite(args.study).data
-data = ["40983", "40499", "1485", "1478", "1590"]
+data = ["31"]
 # data = data[args.range : args.range + math.ceil(len(data) / args.num_tasks)]
 commands = get_commands(data, args)
 
