@@ -60,7 +60,7 @@ def get_commands(data, args):
     commands = []
     for dataset in data:
         for iteration in range(0, args.iterations):
-            dataset_path = os.path.join(os.getcwd(), args.workspace, str(dataset))
+            dataset_path = os.path.join(args.workspace, str(dataset))
             log_path = create_directory(dataset_path, "logs")
             input_path, before_execute = get_input(
                 iteration, dataset_path, dataset, args.kb
@@ -75,6 +75,7 @@ def get_commands(data, args):
                         {args.time_budget} \
                         42 \
                         false \
+                        {args.volume} \
                         {input_path}"""
             stdout_path = os.path.join(log_path, f"stdout_{iteration + 1}.txt")
             stderr_path = os.path.join(log_path, f"stderr_{iteration + 1}.txt")
@@ -174,6 +175,14 @@ def parse_args():
         type=str,
         required=True,
         help="the file with the kb",
+    )
+    parser.add_argument(
+        "-volume",
+        "--volume",
+        nargs="?",
+        type=str,
+        required=True,
+        help="name of the docker volume",
     )
     args = parser.parse_args()
     return args
