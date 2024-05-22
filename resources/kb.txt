@@ -14,7 +14,6 @@ operator(features, pca).
 operator(rebalancing, near_miss).
 operator(rebalancing, smote).
 
-operator(classification, svm).
 operator(classification, knn).
 operator(classification, nn).
 
@@ -28,7 +27,6 @@ hyperparameter(pca, n_components, randint).
 hyperparameter(near_miss, n_neighbors, randint).
 hyperparameter(smote, k_neighbors, randint).
 
-hyperparameter(svm, "C", choice).
 hyperparameter(knn, n_neighbors, randint).
 hyperparameter(knn, weights, choice).
 hyperparameter(knn, metric, choice).
@@ -49,7 +47,6 @@ domain(pca, n_components, [1, 8]).
 domain(near_miss, n_neighbors,  [1, 4]).
 domain(smote, k_neighbors,  [5, 8]).
 
-domain(svm, "C", [0.001, 0.005, 0.01, 0.05, 0.1, 0.5, 1, 5]).
 domain(knn, n_neighbors, [3, 20]).
 domain(knn, weights, ["uniform", "distance"]).
 domain(knn, metric, ["minkowski", "euclidean", "manhattan"]).
