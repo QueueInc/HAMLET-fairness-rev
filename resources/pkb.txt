@@ -1,6 +1,6 @@
 step(normalization).
 step(features).
-step(rebalancing).
+step(mitigation).
 
 step(classification).
 
@@ -11,8 +11,7 @@ operator(normalization, standard).
 operator(normalization, minmax).
 operator(features, select_k_best).
 operator(features, pca).
-operator(rebalancing, near_miss).
-operator(rebalancing, smote).
+operator(mitigation, corr_remover).
 
 operator(classification, knn).
 operator(classification, nn).
@@ -24,8 +23,7 @@ hyperparameter(standard, with_mean, choice).
 hyperparameter(standard, with_std, choice).
 hyperparameter(select_k_best, k, randint).
 hyperparameter(pca, n_components, randint).
-hyperparameter(near_miss, n_neighbors, randint).
-hyperparameter(smote, k_neighbors, randint).
+hyperparameter(corr_remover, alpha, choice).
 
 hyperparameter(knn, n_neighbors, randint).
 hyperparameter(knn, weights, choice).
@@ -44,8 +42,7 @@ domain(standard, with_mean, [true, false]).
 domain(standard, with_std, [true, false]).
 domain(select_k_best, k, [1, 10]).
 domain(pca, n_components, [1, 8]).
-domain(near_miss, n_neighbors,  [1, 4]).
-domain(smote, k_neighbors,  [5, 8]).
+domain(corr_remover, alpha,  [0.25, 0.5, 0.75, 1.0]).
 
 domain(knn, n_neighbors, [3, 20]).
 domain(knn, weights, ["uniform", "distance"]).
@@ -57,4 +54,5 @@ domain(nn, solver, ["lbfgs", "sgd", "adam"]).
 domain(nn, alpha, [0.0001, 0.001, 0.01, 0.00001]).
 domain(nn, learning_rate, ["constant", "invscaling", "adaptive"]).
 
-c1 :=> mandatory([rebalancing], classification).
+c1 :=> mandatory([mitigation], classification).
+c2 :=> mandatory_order([mitigation, features], classification).
