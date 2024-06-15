@@ -7,7 +7,7 @@ import pandas as pd
 from tqdm import tqdm
 
 
-def get_input(iteration, dataset_path, dataset, kb):
+def get_input(iteration, dataset_path, dataset, kb, mining_target):
     """
     MinorityClassPercentage < ((1 / NumberOfClasses) / 1.5)
     NumberOfMissingValues > 0
@@ -50,6 +50,10 @@ def get_input(iteration, dataset_path, dataset, kb):
     def execute():
         kb = read_content(f"{dataset_path}/argumentation/kb_{iteration}.txt")
         rules = read_content(f"{dataset_path}/argumentation/rules_{iteration}.txt")
+
+        if mining_target is not None:
+            rules = "\n".join([line for line in rules.splitlines() if line.endswith(mining_target)])
+        
         with open(input, "w+") as file:
             file.write(kb + "\n" + rules + "\n")
 
@@ -63,7 +67,7 @@ def get_commands(data, args):
             dataset_path = os.path.join(args.workspace, str(dataset))
             log_path = create_directory(dataset_path, "logs")
             input_path, before_execute = get_input(
-                iteration, dataset_path, dataset, args.kb
+                iteration, dataset_path, dataset, args.kb, args.mining_target
             )
             cmd = f"""java -Xss128M -jar hamlet-{args.version}-all.jar \
                         {dataset_path} \
@@ -183,6 +187,14 @@ def parse_args():
         type=str,
         required=True,
         help="name of the docker volume",
+    )
+    parser.add_argument(
+        "-mining_target",
+        "--mining_target",
+        nargs="?",
+        type=str,
+        required=False,
+        help="metric to use to mine rules",
     )
     args = parser.parse_args()
     return args
