@@ -8,7 +8,7 @@ python automl/run_hamlet.py --workspace $1/hamlet/pkb_ika --metric balanced_accu
 cd ..
 git config --global user.email "j.giovanelli@unibo.it"
 git config --global user.name "Joseph Giovanelli"
-git clone https://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@github.com/QueueInc/HAMLET-fairness-results.git
+git clone https://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@github.com/QueueInc/HAMLET-fairness-results.git
 cd HAMLET-fairness-results
 cp -r $1 "./$2-$4-$5"
 git add .
