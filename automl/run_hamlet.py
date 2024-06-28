@@ -217,8 +217,8 @@ def get_filtered_datasets(suite):
 
 args = parse_args()
 # data = openml.study.get_suite(args.study).data
-# data = ["31", "44162", "179"]
-data = ["179"]
+data = ["31", "44162", "179"]
+# data = ["179"]
 # data = data[args.range : args.range + math.ceil(len(data) / args.num_tasks)]
 commands = get_commands(data, args)
 
