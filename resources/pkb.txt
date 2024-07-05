@@ -12,6 +12,7 @@ operator(normalization, minmax).
 operator(features, select_k_best).
 operator(features, pca).
 operator(mitigation, corr_remover).
+operator(mitigation, lfr).
 
 operator(classification, knn).
 operator(classification, nn).
@@ -24,6 +25,9 @@ hyperparameter(standard, with_std, choice).
 hyperparameter(select_k_best, k, randint).
 hyperparameter(pca, n_components, randint).
 hyperparameter(corr_remover, alpha, choice).
+hyperparameter(lfr, n_prototypes, choice).
+hyperparameter(lfr, reconstruct_weight, choice).
+hyperparameter(lfr, fairness_weight, choice).
 
 hyperparameter(knn, n_neighbors, randint).
 hyperparameter(knn, weights, choice).
@@ -43,6 +47,9 @@ domain(standard, with_std, [true, false]).
 domain(select_k_best, k, [1, 10]).
 domain(pca, n_components, [1, 8]).
 domain(corr_remover, alpha,  [0.25, 0.5, 0.75, 1.0]).
+domain(lfr, n_prototypes,  [10, 50, 100, 200]).
+domain(lfr, reconstruct_weight,  [0.1, 0.5, 1.0, 2.0]).
+domain(lfr, fairness_weight,  [0.1, 0.5, 1.0, 2.0]).
 
 domain(knn, n_neighbors, [3, 20]).
 domain(knn, weights, ["uniform", "distance"]).
@@ -55,4 +62,3 @@ domain(nn, alpha, [0.0001, 0.001, 0.01, 0.00001]).
 domain(nn, learning_rate, ["constant", "invscaling", "adaptive"]).
 
 c1 :=> mandatory([mitigation], classification).
-c2 :=> mandatory_order([mitigation, features], classification).
