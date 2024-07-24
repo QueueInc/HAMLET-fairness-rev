@@ -10,19 +10,19 @@ from tqdm import tqdm
 def parse_fair_mode(dataset, mode):
     return {
         "31" : {
-            0 : "8",
-            1 : "12",
-            2 : "8_12"
+            "0" : "8",
+            "1" : "12",
+            "2" : "8_12"
         }, 
         "44162" : {
-            0 : "0",
-            1 : "3",
-            2 : "0_3"
+            "0" : "0",
+            "1" : "3",
+            "2" : "0_3"
         }, 
         "179" : {
-            0 : "8",
-            1 : "9",
-            2 : "8_9"
+            "0" : "9",
+            "1" : "8",
+            "2" : "8_9"
         }
     }[dataset][mode]
 
@@ -134,7 +134,7 @@ def parse_args():
         "-fair-mode",
         "--fair-mode",
         nargs="?",
-        type=int,
+        type=str,
         required=True,
         help="sensitive features to consider during optimisation",
     )
