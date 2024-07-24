@@ -7,6 +7,26 @@ import pandas as pd
 from tqdm import tqdm
 
 
+def parse_fair_mode(dataset, mode):
+    return {
+        "31" : {
+            0 : "8",
+            1 : "12",
+            2 : "8_12"
+        }, 
+        "44162" : {
+            0 : "0",
+            1 : "3",
+            2 : "0_3"
+        }, 
+        "179" : {
+            0 : "8",
+            1 : "9",
+            2 : "8_9"
+        }
+    }[dataset][mode]
+
+
 def get_input(iteration, dataset_path, dataset, kb, mining_target):
     """
     MinorityClassPercentage < ((1 / NumberOfClasses) / 1.5)
@@ -69,11 +89,13 @@ def get_commands(data, args):
             input_path, before_execute = get_input(
                 iteration, dataset_path, dataset, args.kb, args.mining_target
             )
+            sensitive_features = parse_fair_mode(dataset, args.fair-mode)
             cmd = f"""java -Xss128M -jar hamlet-{args.version}-all.jar \
                         {dataset_path} \
                         {dataset} \
                         {args.metric} \
                         {args.fair_metric} \
+                        {sensitive_features} \
                         {args.mode} \
                         {args.batch_size} \
                         {args.time_budget} \
@@ -109,11 +131,19 @@ def parse_args():
         description="Automated Machine Learning Workflow creation and configuration"
     )
     parser.add_argument(
+        "-fair-mode",
+        "--fair-mode",
+        nargs="?",
+        type=int,
+        required=True,
+        help="sensitive features to consider during optimisation",
+    )
+    parser.add_argument(
         "-workspace",
         "--workspace",
         nargs="?",
         type=str,
-        required=False,
+        required=True,
         help="where to save the data",
     )
     parser.add_argument(
@@ -121,7 +151,7 @@ def parse_args():
         "--metric",
         nargs="?",
         type=str,
-        required=False,
+        required=True,
         help="metric to optimize",
     )
     parser.add_argument(
@@ -129,7 +159,7 @@ def parse_args():
         "--fair_metric",
         nargs="?",
         type=str,
-        required=False,
+        required=True,
         help="fair metric to optimize",
     )
     parser.add_argument(
@@ -137,7 +167,7 @@ def parse_args():
         "--mode",
         nargs="?",
         type=str,
-        required=False,
+        required=True,
         help="how to optimize the metric",
     )
     parser.add_argument(
@@ -161,7 +191,7 @@ def parse_args():
         "--version",
         nargs="?",
         type=str,
-        required=False,
+        required=True,
         help="hamlet version to run",
     )
     parser.add_argument(
