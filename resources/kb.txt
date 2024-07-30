@@ -1,3 +1,4 @@
+step(discretization).
 step(normalization).
 step(features).
 step(mitigation).
@@ -5,6 +6,8 @@ step(mitigation).
 step(classification).
 
 
+operator(discretization, kbins).
+operator(discretization, binarizer).
 operator(normalization, power_transformer).
 operator(normalization, robust_scaler).
 operator(normalization, standard).
@@ -16,8 +19,12 @@ operator(mitigation, lfr).
 
 operator(classification, knn).
 operator(classification, nn).
+operator(classification, rf).
 
-
+hyperparameter(kbins, n_bins, randint).
+hyperparameter(kbins, encode, choice).
+hyperparameter(kbins, strategy, choice).
+hyperparameter(binarizer, threshold, choice).
 hyperparameter(robust_scaler, with_centering, choice).
 hyperparameter(robust_scaler, with_scaling, choice).
 hyperparameter(standard, with_mean, choice).
@@ -38,8 +45,18 @@ hyperparameter(nn, activation, choice).
 hyperparameter(nn, solver, choice).
 hyperparameter(nn, alpha, choice).
 hyperparameter(nn, learning_rate, choice).
+hyperparameter(rf, n_estimators, choice).
+hyperparameter(rf, max_depth, randint).
+hyperparameter(rf, max_features, randint).
+hyperparameter(rf, min_samples_split, randint).
+hyperparameter(rf, max_leaf_nodes, randint).
+hyperparameter(rf, bootstrap, choice).
+hyperparameter(rf, criterion, choice).
 
-
+domain(kbins, n_bins, [3, 8]).
+domain(kbins, encode, ["ordinal"]).
+domain(kbins, strategy, ["uniform", "quantile", "kmeans"]).
+domain(binarizer, threshold, [0.0, 0.5, 2.0, 5.0]).
 domain(robust_scaler, with_centering, [true, false]).
 domain(robust_scaler, with_scaling, [true, false]).
 domain(standard, with_mean, [true, false]).
@@ -60,3 +77,10 @@ domain(nn, activation, ["logistic", "tanh", "relu"]).
 domain(nn, solver, ["lbfgs", "sgd", "adam"]).
 domain(nn, alpha, [0.0001, 0.001, 0.01, 0.00001]).
 domain(nn, learning_rate, ["constant", "invscaling", "adaptive"]).
+domain(rf, n_estimators, [10, 25, 50, 75, 100]).
+domain(rf, max_depth, [1, 5]).
+domain(rf, max_features, [1, 4]).
+domain(rf, min_samples_split, [2, 6]).
+domain(rf, max_leaf_nodes, [2, 6]).
+domain(rf, bootstrap, [true, false]).
+domain(rf, criterion, ["gini", "entropy"]).
