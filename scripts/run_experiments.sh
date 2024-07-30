@@ -10,7 +10,7 @@ git config --global user.email "j.giovanelli@unibo.it"
 git config --global user.name "Joseph Giovanelli"
 git clone "https://$6@github.com/QueueInc/HAMLET-fairness-results.git"
 cd HAMLET-fairness-results
-cp -r $2 "./$1-$3-$5-$9"
+cp -r $2 "./$7-$8-$1-$3-$5-$9"
 git add .
 git commit -m "new results in $7-$8-$1-$3-$5-$9"
 git push
