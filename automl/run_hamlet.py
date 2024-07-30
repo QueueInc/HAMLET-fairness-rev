@@ -89,7 +89,7 @@ def get_commands(data, args):
             input_path, before_execute = get_input(
                 iteration, dataset_path, dataset, args.kb, args.mining_target
             )
-            sensitive_features = parse_fair_mode(dataset, args.fair-mode)
+            sensitive_features = parse_fair_mode(dataset, args.fair_mode)
             cmd = f"""java -Xss128M -jar hamlet-{args.version}-all.jar \
                         {dataset_path} \
                         {dataset} \
