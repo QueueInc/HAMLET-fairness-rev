@@ -1,13 +1,10 @@
-step(discretization).
 step(normalization).
 step(features).
 step(mitigation).
+step(rebalancing).
 
 step(classification).
 
-
-operator(discretization, kbins).
-operator(discretization, binarizer).
 operator(normalization, power_transformer).
 operator(normalization, robust_scaler).
 operator(normalization, standard).
@@ -16,15 +13,13 @@ operator(features, select_k_best).
 operator(features, pca).
 operator(mitigation, corr_remover).
 operator(mitigation, lfr).
+operator(rebalancing, near_miss).
+operator(rebalancing, smote).
 
 operator(classification, knn).
 operator(classification, nn).
 operator(classification, rf).
 
-hyperparameter(kbins, n_bins, randint).
-hyperparameter(kbins, encode, choice).
-hyperparameter(kbins, strategy, choice).
-hyperparameter(binarizer, threshold, choice).
 hyperparameter(robust_scaler, with_centering, choice).
 hyperparameter(robust_scaler, with_scaling, choice).
 hyperparameter(standard, with_mean, choice).
@@ -35,6 +30,8 @@ hyperparameter(corr_remover, alpha, choice).
 hyperparameter(lfr, n_prototypes, choice).
 hyperparameter(lfr, reconstruct_weight, choice).
 hyperparameter(lfr, fairness_weight, choice).
+hyperparameter(near_miss, n_neighbors, randint).
+hyperparameter(smote, k_neighbors, randint).
 
 hyperparameter(knn, n_neighbors, randint).
 hyperparameter(knn, weights, choice).
@@ -53,10 +50,6 @@ hyperparameter(rf, max_leaf_nodes, randint).
 hyperparameter(rf, bootstrap, choice).
 hyperparameter(rf, criterion, choice).
 
-domain(kbins, n_bins, [3, 8]).
-domain(kbins, encode, ["ordinal"]).
-domain(kbins, strategy, ["uniform", "quantile", "kmeans"]).
-domain(binarizer, threshold, [0.0, 0.5, 2.0, 5.0]).
 domain(robust_scaler, with_centering, [true, false]).
 domain(robust_scaler, with_scaling, [true, false]).
 domain(standard, with_mean, [true, false]).
@@ -67,12 +60,14 @@ domain(corr_remover, alpha,  [0.25, 0.5, 0.75, 1.0]).
 domain(lfr, n_prototypes,  [10, 50, 100, 200]).
 domain(lfr, reconstruct_weight,  [0.1, 0.5, 1.0, 2.0]).
 domain(lfr, fairness_weight,  [0.1, 0.5, 1.0, 2.0]).
+domain(near_miss, n_neighbors,  [1, 4]).
+domain(smote, k_neighbors,  [5, 8]).
 
 domain(knn, n_neighbors, [3, 20]).
 domain(knn, weights, ["uniform", "distance"]).
 domain(knn, metric, ["minkowski", "euclidean", "manhattan"]).
-domain(nn, n_hidden_layers, [1, 5, 10, 25]).
-domain(nn, n_neurons, [5, 10, 25, 50, 100]).
+domain(nn, n_hidden_layers, [1, 5, 10, 20]).
+domain(nn, n_neurons, [5, 10, 25, 50]).
 domain(nn, activation, ["logistic", "tanh", "relu"]).
 domain(nn, solver, ["lbfgs", "sgd", "adam"]).
 domain(nn, alpha, [0.0001, 0.001, 0.01, 0.00001]).
@@ -84,3 +79,11 @@ domain(rf, min_samples_split, [2, 6]).
 domain(rf, max_leaf_nodes, [2, 6]).
 domain(rf, bootstrap, [true, false]).
 domain(rf, criterion, ["gini", "entropy"]).
+
+c1 :=> mandatory([mitigation], classification).
+
+c3 :=> mandatory_order([mitigation, features], classification).
+c4 :=> mandatory_order([mitigation, normalization], classification).
+
+c5 :=> mandatory([normalization], knn).
+c6 :=> mandatory([normalization], nn).

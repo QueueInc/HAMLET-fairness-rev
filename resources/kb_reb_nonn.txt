@@ -21,7 +21,6 @@ operator(rebalancing, near_miss).
 operator(rebalancing, smote).
 
 operator(classification, knn).
-operator(classification, nn).
 operator(classification, rf).
 
 hyperparameter(kbins, n_bins, randint).
@@ -44,12 +43,6 @@ hyperparameter(smote, k_neighbors, randint).
 hyperparameter(knn, n_neighbors, randint).
 hyperparameter(knn, weights, choice).
 hyperparameter(knn, metric, choice).
-hyperparameter(nn, n_hidden_layers, choice).
-hyperparameter(nn, n_neurons, choice).
-hyperparameter(nn, activation, choice).
-hyperparameter(nn, solver, choice).
-hyperparameter(nn, alpha, choice).
-hyperparameter(nn, learning_rate, choice).
 hyperparameter(rf, n_estimators, choice).
 hyperparameter(rf, max_depth, randint).
 hyperparameter(rf, max_features, randint).
@@ -78,12 +71,6 @@ domain(smote, k_neighbors,  [5, 8]).
 domain(knn, n_neighbors, [3, 20]).
 domain(knn, weights, ["uniform", "distance"]).
 domain(knn, metric, ["minkowski", "euclidean", "manhattan"]).
-domain(nn, n_hidden_layers, [1, 5, 10, 25]).
-domain(nn, n_neurons, [5, 10, 25, 50, 100]).
-domain(nn, activation, ["logistic", "tanh", "relu"]).
-domain(nn, solver, ["lbfgs", "sgd", "adam"]).
-domain(nn, alpha, [0.0001, 0.001, 0.01, 0.00001]).
-domain(nn, learning_rate, ["constant", "invscaling", "adaptive"]).
 domain(rf, n_estimators, [10, 25, 50, 75, 100]).
 domain(rf, max_depth, [1, 5]).
 domain(rf, max_features, [1, 4]).
@@ -91,13 +78,3 @@ domain(rf, min_samples_split, [2, 6]).
 domain(rf, max_leaf_nodes, [2, 6]).
 domain(rf, bootstrap, [true, false]).
 domain(rf, criterion, ["gini", "entropy"]).
-
-c1 :=> mandatory([mitigation], classification).
-c2 :=> forbidden([discretization, normalization], classification).
-
-c3 :=> mandatory_order([mitigation, features], classification).
-c4 :=> mandatory_order([mitigation, normalization], classification).
-c5 :=> mandatory_order([mitigation, discretization], classification).
-
-c5 :=> mandatory([normalization, features], knn).
-c6 :=> mandatory([normalization], nn).
