@@ -87,4 +87,3 @@ c4 :=> mandatory_order([mitigation, normalization], classification).
 c5 :=> mandatory_order([mitigation, discretization], classification).
 
 c5 :=> mandatory([normalization, features], knn).
-c6 :=> mandatory([normalization], nn).
