@@ -23,18 +23,18 @@ def parse_fair_mode(dataset, mode):
     return {
         "31" : {
             "0" : "sensitive_feature(personal_status, [\"male single\", \"male div/dep/mar\", \"male mar/wid\", \"female div/dep/mar\"]).\n", # personal_status
-            "1" : "sensitive_feature(age, []).\n", # age - to discretize
-            "2" : parse_fair_mode(dataset, "0") + parse_fair_mode(dataset, "1")
+            "1" : "", # age - to discretize
+            "2" : "sensitive_feature(personal_status, [\"male single\", \"male div/dep/mar\", \"male mar/wid\", \"female div/dep/mar\"]).\n"
         },
         "44162" : {
             "0" : "sensitive_feature(sex, [0, 1]).\n", # sex
             "1" : "sensitive_feature(race, [0, 1, 2, 3, 4, 5]).\n", # race
-            "2" : parse_fair_mode(dataset, "0") + parse_fair_mode(dataset, "1")
+            "2" : "sensitive_feature(sex, [0, 1]).\nsensitive_feature(race, [0, 1, 2, 3, 4, 5]).\n"
         },
         "179" : {
             "0" : "sensitive_feature(sex, [\"Male\", \"Female\"]).\n",
             "1" : "sensitive_feature(race, [\"Amer-Indian-Eskimo\", \"Asian-Pac-Islander\", \"Black\", \"Other\", \"White\"]).\n",
-            "2" : parse_fair_mode(dataset, "0") + parse_fair_mode(dataset, "1")
+            "2" : "sensitive_feature(sex, [\"Male\", \"Female\"]).\nsensitive_feature(race, [\"Amer-Indian-Eskimo\", \"Asian-Pac-Islander\", \"Black\", \"Other\", \"White\"]).\n"
         }
     }[dataset][mode]
 
