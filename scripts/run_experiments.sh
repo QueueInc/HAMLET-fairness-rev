@@ -13,10 +13,10 @@ RUN="$8"
 
 wget https://github.com/QueueInc/HAMLET/releases/download/$VERSION/hamlet-$VERSION-all.jar
 
-python automl/run_hamlet.py --fair-mode "$FAIR_MODE" --workspace /test/hamlet/ika --fair_metric "$FAIR_METRIC" --mining_target "$MINING_TARGET" --batch_size 999999 --time_budget $(expr $TIME_BUDGET / 4) --version $VERSION --iterations 4 --kb /home/HAMLET-fairness/resources/$KB_NAME.txt
-python automl/run_hamlet.py --fair-mode "$FAIR_MODE" --workspace /test/hamlet/pkb_ika --fair_metric "$FAIR_METRIC" --mining_target "$MINING_TARGET" --batch_size 999999 --time_budget $(expr $TIME_BUDGET / 4) --version $VERSION --iterations 4 --kb /home/HAMLET-fairness/resources/p$KB_NAME.txt
-python automl/run_hamlet.py --fair-mode "$FAIR_MODE" --workspace /test/hamlet/baseline --fair_metric "$FAIR_METRIC" --mining_target "$MINING_TARGET" --batch_size 999999 --time_budget $TIME_BUDGET --version $VERSION --iterations 1 --kb /home/HAMLET-fairness/resources/$KB_NAME.txt
-python automl/run_hamlet.py --fair-mode "$FAIR_MODE" --workspace /test/hamlet/pkb --fair_metric "$FAIR_METRIC" --mining_target "$MINING_TARGET" --batch_size 999999 --time_budget $TIME_BUDGET --version $VERSION --iterations 1 --kb /home/HAMLET-fairness/resources/p$KB_NAME.txt
+python automl/run_hamlet.py --fair-mode "$FAIR_MODE" --workspace /test/hamlet/ika --fair_metric "$FAIR_METRIC" --mining_target "$MINING_TARGET" --batch_size 999999 --time_budget $(expr $TIME_BUDGET / 4) --version $VERSION --iterations 4 --kb /home/HAMLET-fairness-rev/resources/$KB_NAME.txt
+python automl/run_hamlet.py --fair-mode "$FAIR_MODE" --workspace /test/hamlet/pkb_ika --fair_metric "$FAIR_METRIC" --mining_target "$MINING_TARGET" --batch_size 999999 --time_budget $(expr $TIME_BUDGET / 4) --version $VERSION --iterations 4 --kb /home/HAMLET-fairness-rev/resources/p$KB_NAME.txt
+python automl/run_hamlet.py --fair-mode "$FAIR_MODE" --workspace /test/hamlet/baseline --fair_metric "$FAIR_METRIC" --mining_target "$MINING_TARGET" --batch_size 999999 --time_budget $TIME_BUDGET --version $VERSION --iterations 1 --kb /home/HAMLET-fairness-rev/resources/$KB_NAME.txt
+python automl/run_hamlet.py --fair-mode "$FAIR_MODE" --workspace /test/hamlet/pkb --fair_metric "$FAIR_METRIC" --mining_target "$MINING_TARGET" --batch_size 999999 --time_budget $TIME_BUDGET --version $VERSION --iterations 1 --kb /home/HAMLET-fairness-rev/resources/p$KB_NAME.txt
 
 cd ..
 git config --global user.email "j.giovanelli@unibo.it"
