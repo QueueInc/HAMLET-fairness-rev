@@ -38,6 +38,7 @@ def parse_fair_mode(dataset, mode):
         }
     }[dataset][mode]
 
+
 def parse_mining_target(mining_target, fairness_metric):
     return [{
         "a" : "balanced_accuracy",
