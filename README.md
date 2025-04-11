@@ -1,8 +1,8 @@
-# HAMLET: Human-centered AutoMl via Logic and argumEnTation
+# HAMLET
 
-This is the repository for reproducing the experiments performed in [HAMLET: a framework for Human-centered AutoML via Structured Argumentation](https://authors.elsevier.com/sd/article/S0167-739X(22)00439-3).
+This is the repository for reproducing the experiments performed in [?]().
 
-If you are interest in discovering HAMLET as an end-to-end AutoML framework, please refer to the [GitHub repository](https://github.com/QueueInc/HAMLET) 
+If you are interest in discovering HAMLET as an end-to-end AutoML framework, please refer to the [GitHub repository](https://github.com/QueueInc/HAMLET).
 
 # Requirements
 
@@ -19,7 +19,7 @@ To test if Docker is installed correctly:
 ```
 Unable to find image 'hello-world:latest' locally
 latest: Pulling from library/hello-world
-2db29710123e: Pull complete 
+2db29710123e: Pull complete
 Digest: sha256:7d246653d0511db2a6b2e0436cfd0e52ac8c066000264b3ce63331ac66dca625
 Status: Downloaded newer image for hello-world:latest
 

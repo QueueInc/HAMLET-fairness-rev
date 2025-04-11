@@ -7,27 +7,46 @@ import pandas as pd
 from tqdm import tqdm
 
 
+def parse_dataset(dataset):
+    return {
+        "31" : "dataset(credit-g).\n",
+        "44162" : "dataset(compass).\n",
+        "179" : "dataset(adult).\n",
+    }[dataset]
+
+
+def parse_metrics(metric, fairness_metric):
+    return f"metric({metric}).\nfairness_metric({fairness_metric}).\n"
+
+
 def parse_fair_mode(dataset, mode):
     return {
         "31" : {
-            "0" : "8",
-            "1" : "12",
-            "2" : "8_12"
-        }, 
+            "0" : "sensitive_feature(personal_status, [\"male single\", \"male div/dep/mar\", \"male mar/wid\", \"female div/dep/mar\"]).\n", # personal_status
+            "1" : "sensitive_feature(age, []).\n", # age - to discretize
+            "2" : parse_fair_mode(dataset, "0") + parse_fair_mode(dataset, "1")
+        },
         "44162" : {
-            "0" : "0",
-            "1" : "3",
-            "2" : "0_3"
-        }, 
+            "0" : "sensitive_feature(sex, [0, 1]).\n", # sex
+            "1" : "sensitive_feature(race, [0, 1, 2, 3, 4, 5]).\n", # race
+            "2" : parse_fair_mode(dataset, "0") + parse_fair_mode(dataset, "1")
+        },
         "179" : {
-            "0" : "9",
-            "1" : "8",
-            "2" : "8_9"
+            "0" : "sensitive_feature(sex, [\"Male\", \"Female\"]).\n",
+            "1" : "sensitive_feature(race, [\"Amer-Indian-Eskimo\", \"Asian-Pac-Islander\", \"Black\", \"Other\", \"White\"]).\n",
+            "2" : parse_fair_mode(dataset, "0") + parse_fair_mode(dataset, "1")
         }
     }[dataset][mode]
 
+def parse_mining_target(mining_target, fairness_metric):
+    return [{
+        "a" : "balanced_accuracy",
+        "f" : fairness_metric,
+        "g" : "discriminate"
+    }[x] for x in mining_target]
 
-def get_input(iteration, dataset_path, dataset, kb, mining_target):
+
+def get_input(iteration, dataset_path, dataset, kb, mining_target, fair_metric, fair_mode):
     """
     MinorityClassPercentage < ((1 / NumberOfClasses) / 1.5)
     NumberOfMissingValues > 0
@@ -39,12 +58,21 @@ def get_input(iteration, dataset_path, dataset, kb, mining_target):
             return file.read()
 
     if iteration == 0:
+
+        guards_path = os.path.join(
+            create_directory(dataset_path, "resources"), "guards.txt"
+        )
+
+        my_constraints = ""
+        my_constraints += parse_dataset(dataset)
+        my_constraints += parse_metrics("balanced_accuracy", fair_metric)
+        my_constraints += parse_fair_mode(dataset, fair_mode)
+
         df = pd.read_csv(
             os.path.join("resources", "extended_meta_features_openml_cc_18.csv")
         )
         df = df[df["ID"] == int(dataset)]
         if not df.empty:
-            my_constraints = ""
             if df["MinorityClassPercentage"].values[0] < (
                 0.666 / df["NumberOfClasses"].values[0]
             ):
@@ -55,14 +83,11 @@ def get_input(iteration, dataset_path, dataset, kb, mining_target):
                 my_constraints += "mc1 :=> -missing_values.\n"
             if df["NumberOfFeatures"].values[0] > 25:
                 my_constraints += "mc2 :=> high_dimensionality.\n"
-            rules = read_content(kb)
-            guards_path = os.path.join(
-                create_directory(dataset_path, "resources"), "guards.txt"
-            )
-            with open(guards_path, "w+") as file:
-                file.write(rules + "\n" + my_constraints + "\n")
-        else:
-            guards_path = kb
+
+        rules = read_content(kb)
+        with open(guards_path, "w+") as file:
+            file.write(rules + "\n" + my_constraints + "\n")
+
         return guards_path, lambda: None
 
     input = f"{dataset_path}/argumentation/complete_kb_{iteration}.txt"
@@ -71,9 +96,8 @@ def get_input(iteration, dataset_path, dataset, kb, mining_target):
         kb = read_content(f"{dataset_path}/argumentation/kb_{iteration}.txt")
         rules = read_content(f"{dataset_path}/argumentation/rules_{iteration}.txt")
 
-        if mining_target is not None:
-            rules = "\n".join([line for line in rules.splitlines() if line.endswith(mining_target)])
-        
+        rules = "\n".join([line for line in rules.splitlines() if any([m in line for m in parse_mining_target(mining_target, fair_metric)])])
+
         with open(input, "w+") as file:
             file.write(kb + "\n" + rules + "\n")
 
@@ -87,21 +111,15 @@ def get_commands(data, args):
             dataset_path = os.path.join(args.workspace, str(dataset))
             log_path = create_directory(dataset_path, "logs")
             input_path, before_execute = get_input(
-                iteration, dataset_path, dataset, args.kb, args.mining_target
+                iteration, dataset_path, dataset, args.kb, args.mining_target, args.fair_metric, args.fair_mode
             )
-            sensitive_features = parse_fair_mode(dataset, args.fair_mode)
             cmd = f"""java -Xss128M -jar hamlet-{args.version}-all.jar \
                         {dataset_path} \
-                        {dataset} \
-                        {args.metric} \
-                        {args.fair_metric} \
-                        {sensitive_features} \
-                        {args.mode} \
+                        max \
                         {args.batch_size} \
                         {args.time_budget} \
                         42 \
                         false \
-                        {args.volume} \
                         {input_path}"""
             stdout_path = os.path.join(log_path, f"stdout_{iteration + 1}.txt")
             stderr_path = os.path.join(log_path, f"stderr_{iteration + 1}.txt")
@@ -146,14 +164,14 @@ def parse_args():
         required=True,
         help="where to save the data",
     )
-    parser.add_argument(
-        "-metric",
-        "--metric",
-        nargs="?",
-        type=str,
-        required=True,
-        help="metric to optimize",
-    )
+    # parser.add_argument(
+    #     "-metric",
+    #     "--metric",
+    #     nargs="?",
+    #     type=str,
+    #     required=True,
+    #     help="metric to optimize",
+    # )
     parser.add_argument(
         "-fair_metric",
         "--fair_metric",
@@ -162,14 +180,14 @@ def parse_args():
         required=True,
         help="fair metric to optimize",
     )
-    parser.add_argument(
-        "-mode",
-        "--mode",
-        nargs="?",
-        type=str,
-        required=True,
-        help="how to optimize the metric",
-    )
+    # parser.add_argument(
+    #     "-mode",
+    #     "--mode",
+    #     nargs="?",
+    #     type=str,
+    #     required=True,
+    #     help="how to optimize the metric",
+    # )
     parser.add_argument(
         "-batch_size",
         "--batch_size",
@@ -210,14 +228,14 @@ def parse_args():
         required=True,
         help="the file with the kb",
     )
-    parser.add_argument(
-        "-volume",
-        "--volume",
-        nargs="?",
-        type=str,
-        required=True,
-        help="name of the docker volume",
-    )
+    # parser.add_argument(
+    #     "-volume",
+    #     "--volume",
+    #     nargs="?",
+    #     type=str,
+    #     required=True,
+    #     help="name of the docker volume",
+    # )
     parser.add_argument(
         "-mining_target",
         "--mining_target",

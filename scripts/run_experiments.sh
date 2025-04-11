@@ -1,19 +1,54 @@
 #!/bin/bash
-echo Running EXPERIMENTS
-wget https://github.com/QueueInc/HAMLET/releases/download/$3/hamlet-$3-all.jar
-python automl/run_hamlet.py --fair-mode $1 --workspace $2/hamlet/ika --metric balanced_accuracy --fair_metric $5 --mining_target $9 --mode max --batch_size 999999 --time_budget $(expr $7 / 4) --version $3 --iterations 4 --volume $4 --kb /home/HAMLET-fairness/resources/$8.txt
-python automl/run_hamlet.py --fair-mode $1 --workspace $2/hamlet/pkb_ika --metric balanced_accuracy --fair_metric $5 --mining_target $9 --mode max --batch_size 999999 --time_budget $(expr $7 / 4) --version $3 --iterations 4 --volume $4 --kb /home/HAMLET-fairness/resources/p$8.txt
-python automl/run_hamlet.py --fair-mode $1 --workspace $2/hamlet/baseline --metric balanced_accuracy --fair_metric $5 --mining_target $9 --mode max --batch_size 999999 --time_budget $7 --version $3 --iterations 1 --volume $4 --kb /home/HAMLET-fairness/resources/$8.txt
-python automl/run_hamlet.py --fair-mode $1 --workspace $2/hamlet/pkb --metric balanced_accuracy --fair_metric $5 --mining_target $9 --mode max --batch_size 999999 --time_budget $7 --version $3 --iterations 1 --volume $4 --kb /home/HAMLET-fairness/resources/p$8.txt
+
+echo "Running Experiments"
+
+VERSION="$1"
+FAIR_MODE="$2"
+FAIR_METRIC="$3"
+MINING_TARGET="$4"
+TIME_BUDGET=$5
+KB_NAME="$6"
+GH_TOKEN="$7"
+RUN="$8"
+
+wget https://github.com/QueueInc/HAMLET/releases/download/$VERSION/hamlet-$VERSION-all.jar
+
+python automl/run_hamlet.py --fair-mode "$FAIR_MODE" --workspace /test/hamlet/ika --fair_metric "$FAIR_METRIC" --mining_target "$MINING_TARGET" --batch_size 999999 --time_budget $(expr $TIME_BUDGET / 4) --version $VERSION --iterations 4 --kb /home/HAMLET-fairness/resources/$KB_NAME.txt
+python automl/run_hamlet.py --fair-mode "$FAIR_MODE" --workspace /test/hamlet/pkb_ika --fair_metric "$FAIR_METRIC" --mining_target "$MINING_TARGET" --batch_size 999999 --time_budget $(expr $TIME_BUDGET / 4) --version $VERSION --iterations 4 --kb /home/HAMLET-fairness/resources/p$KB_NAME.txt
+python automl/run_hamlet.py --fair-mode "$FAIR_MODE" --workspace /test/hamlet/baseline --fair_metric "$FAIR_METRIC" --mining_target "$MINING_TARGET" --batch_size 999999 --time_budget $TIME_BUDGET --version $VERSION --iterations 1 --kb /home/HAMLET-fairness/resources/$KB_NAME.txt
+python automl/run_hamlet.py --fair-mode "$FAIR_MODE" --workspace /test/hamlet/pkb --fair_metric "$FAIR_METRIC" --mining_target "$MINING_TARGET" --batch_size 999999 --time_budget $TIME_BUDGET --version $VERSION --iterations 1 --kb /home/HAMLET-fairness/resources/p$KB_NAME.txt
+
 cd ..
 git config --global user.email "j.giovanelli@unibo.it"
 git config --global user.name "Joseph Giovanelli"
-git clone "https://$6@github.com/QueueInc/HAMLET-fairness-results.git"
-cd HAMLET-fairness-results
-cp -r $2 "./$7-$8-$1-$3-$5-$9"
-git add .
-git commit -m "new results in $7-$8-$1-$3-$5-$9"
-git push
+
+while true; do
+    rm -rf HAMLET-fairness-rev-results
+
+    echo "Cloning repo..."
+    if git clone "https://$GH_TOKEN@github.com/QueueInc/HAMLET-fairness-rev-results.git"; then
+        cd HAMLET-fairness-rev-results || continue
+
+        echo "Copying results..."
+        if cp -r "/test" "./$RUN-$TIME_BUDGET-$KB_NAME-$FAIR_MODE-$VERSION-$FAIR_METRIC-$MINING_TARGET"; then
+
+            echo "Staging changes..."
+            if git add . && git commit -m "new results in $RUN-$TIME_BUDGET-$KB_NAME-$FAIR_MODE-$VERSION-$FAIR_METRIC-$MINING_TARGET"; then
+
+                echo "Pushing to remote..."
+                if git push; then
+                    echo "Push succeeded!"
+                    break
+                else
+                    echo "Push failed. Restarting process..."
+                fi
+            fi
+        fi
+    fi
+
+    echo "Waiting before retrying..."
+    sleep 5
+done
 
 # python automl/run_comparison.py --tool auto-sklearn --budget 3600 --output_folder $1/auto_sklearn
 # python automl/run_comparison.py --tool h2o --budget 3600 --output_folder $1/h2o
