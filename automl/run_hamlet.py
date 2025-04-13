@@ -9,7 +9,7 @@ from tqdm import tqdm
 
 def parse_dataset(dataset):
     return {
-        "31" : "dataset(credit-g).\n",
+        "31" : "dataset(\"credit-g\").\n",
         "44162" : "dataset(compass).\n",
         "179" : "dataset(adult).\n",
     }[dataset]
