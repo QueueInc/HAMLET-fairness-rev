@@ -22,9 +22,9 @@ def parse_metrics(metric, fairness_metric):
 def parse_fair_mode(dataset, mode):
     return {
         "31" : {
-            "0" : "sensitive_feature(personal_status, [\"male single\", \"male div/dep/mar\", \"male mar/wid\", \"female div/dep/mar\"]).\n", # personal_status
-            "1" : "", # age - to discretize
-            "2" : "sensitive_feature(personal_status, [\"male single\", \"male div/dep/mar\", \"male mar/wid\", \"female div/dep/mar\"]).\n"
+            "0" : "sensitive_feature(personal_status, [\"single\", \"div/dep/mar\", \"mar/wid\"]).\n", # personal_status
+            "1" : "sensitive_feature(sex, [male, female]).\n",
+            "2" : "sensitive_feature(personal_status, [\"single\", \"div/dep/mar\", \"mar/wid\"]).\nsensitive_feature(sex, [male, female]).\n"
         },
         "44162" : {
             "0" : "sensitive_feature(sex, [0, 1]).\n", # sex
