@@ -6,7 +6,6 @@ import pandas as pd
 
 from tqdm import tqdm
 
-
 def parse_dataset(dataset):
     return {
         "31" : "dataset(\"credit-g\").\n",
@@ -14,6 +13,12 @@ def parse_dataset(dataset):
         "179" : "dataset(adult).\n",
     }[dataset]
 
+def parse_unbalanced(dataset):
+    return {
+        "31" : "mc0 :=> unbalanced_dataset.\n",
+        "44162" : "",
+        "179" : "mc0 :=> unbalanced_dataset.\n",
+    }[dataset]
 
 def parse_metrics(metric, fairness_metric):
     return f"metric({metric}).\nfairness_metric({fairness_metric}).\n"
@@ -68,22 +73,23 @@ def get_input(iteration, dataset_path, dataset, kb, mining_target, fair_metric, 
         my_constraints += parse_dataset(dataset)
         my_constraints += parse_metrics("balanced_accuracy", fair_metric)
         my_constraints += parse_fair_mode(dataset, fair_mode)
+        my_constraints += parse_unbalanced(dataset)
 
-        df = pd.read_csv(
-            os.path.join("resources", "extended_meta_features_openml_cc_18.csv")
-        )
-        df = df[df["ID"] == int(dataset)]
-        if not df.empty:
-            if df["MinorityClassPercentage"].values[0] < (
-                0.666 / df["NumberOfClasses"].values[0]
-            ):
-                my_constraints += "mc0 :=> unbalanced_dataset.\n"
-            if df["NumberOfMissingValues"].values[0] > 0:
-                my_constraints += "mc1 :=> missing_values.\n"
-            else:
-                my_constraints += "mc1 :=> -missing_values.\n"
-            if df["NumberOfFeatures"].values[0] > 25:
-                my_constraints += "mc2 :=> high_dimensionality.\n"
+        # df = pd.read_csv(
+        #     os.path.join("resources", "extended_meta_features_openml_cc_18.csv")
+        # )
+        # df = df[df["ID"] == int(dataset)]
+        # if not df.empty:
+        #     if df["MinorityClassPercentage"].values[0] < (
+        #         0.666 / df["NumberOfClasses"].values[0]
+        #     ):
+        #         my_constraints += "mc0 :=> unbalanced_dataset.\n"
+        #     if df["NumberOfMissingValues"].values[0] > 0:
+        #         my_constraints += "mc1 :=> missing_values.\n"
+        #     else:
+        #         my_constraints += "mc1 :=> -missing_values.\n"
+        #     if df["NumberOfFeatures"].values[0] > 25:
+        #         my_constraints += "mc2 :=> high_dimensionality.\n"
 
         rules = read_content(kb)
         with open(guards_path, "w+") as file:
