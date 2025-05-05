@@ -90,4 +90,4 @@ c6 :=> mandatory([normalization], nn).
 
 c7 : unbalanced_dataset => mandatory([rebalancing], classification).
 c8 :=> mandatory_order([mitigation, rebalancing], classification).
-c9 :=> mandatory_order([normalizazion, features], classification).
+c9 :=> mandatory_order([normalization, features], classification).
