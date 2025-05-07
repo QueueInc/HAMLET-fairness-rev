@@ -104,7 +104,9 @@ def get_input(iteration, dataset_path, dataset, kb, mining_target, fair_metric, 
         rules = read_content(f"{dataset_path}/argumentation/rules_{iteration}.txt")
 
         rules = "\n".join([line for line in rules.splitlines() if any([m in line for m in parse_mining_target(mining_target, fair_metric)])])
-
+        rules = "\n".join([line for line in rules.splitlines() if not("forbidden" in line and "mitigation" in line)])
+        rules = "\n".join([line for line in rules.splitlines() if not("discriminate" in line and "mitigation" in line)])
+        
         with open(input, "w+") as file:
             file.write(kb + "\n" + rules + "\n")
 
