@@ -74,6 +74,7 @@ def get_input(iteration, dataset_path, dataset, kb, mining_target, fair_metric, 
         my_constraints += parse_metrics("balanced_accuracy", fair_metric)
         my_constraints += parse_fair_mode(dataset, fair_mode)
         my_constraints += parse_unbalanced(dataset)
+        my_constraints += "fairness_thresholds(0.4, 0.6).\nperformance_thresholds(0.4, 0.6).\nmining_support(0.5)."
 
         # df = pd.read_csv(
         #     os.path.join("resources", "extended_meta_features_openml_cc_18.csv")
