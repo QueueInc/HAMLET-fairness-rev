@@ -80,14 +80,14 @@ domain(rf, max_leaf_nodes, [2, 6]).
 domain(rf, bootstrap, [true, false]).
 domain(rf, criterion, ["gini", "entropy"]).
 
-c1 :=> mandatory([mitigation], classification).
+c1 : [] => mandatory([mitigation], classification).
 
-c3 :=> mandatory_order([mitigation, features], classification).
-c4 :=> mandatory_order([mitigation, normalization], classification).
+c3 : [] => mandatory_order([mitigation, features], classification).
+c4 : [] => mandatory_order([mitigation, normalization], classification).
 
-c5 :=> mandatory([normalization], knn).
-c6 :=> mandatory([normalization], nn).
+c5 : [] => mandatory([normalization], knn).
+c6 : [] => mandatory([normalization], nn).
 
 c7 : unbalanced_dataset => mandatory([rebalancing], classification).
-c8 :=> mandatory_order([mitigation, rebalancing], classification).
-c9 :=> mandatory_order([normalization, features], classification).
+c8 : [] => mandatory_order([mitigation, rebalancing], classification).
+c9 : [] => mandatory_order([normalization, features], classification).
